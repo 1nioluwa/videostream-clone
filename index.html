@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoStream - Quick Video Hosting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hero-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .video-player {
+            max-width: 800px;
+            width: 100%;
+            height: auto;
+        }
+        .upload-zone {
+            border: 2px dashed #cbd5e0;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        .upload-zone:hover {
+            border-color: #4299e1;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <!-- Header -->
+    <header class="hero-bg text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">Upload & Share Videos Instantly</h1>
+            <p class="text-lg md:text-xl mb-8">Upload your videos in seconds. Share them anywhere. Embed them on your site.</p>
+            <button id="uploadBtn" class="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold shadow-lg hover:bg-gray-100 transition">Choose Video</button>
+            <input type="file" id="videoFile" accept="video/*" class="hidden" />
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-16">
+        <!-- Features Section -->
+        <section class="grid md:grid-cols-3 gap-8 mb-16">
+            <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/357bd3a5-115b-4e07-99ca-5529126ef680.png" alt="Icon depicting a video upload process with cloud storage and video file in soft blue and gray tones" class="mx-auto mb-4 w-16 h-16">
+                <h2 class="text-2xl font-semibold mb-2">Quick Upload</h2>
+                <p class="text-gray-600">Upload videos in various formats like MP4, MOV, and AVI without creating an account.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/8df10626-23ce-48ca-8613-24a15d8b1f7c.png" alt="Icon representing sharing videos with arrows pointing outwards and social media symbols in shared bright colors" class="mx-auto mb-4 w-16 h-16">
+                <h2 class="text-2xl font-semibold mb-2">Easy Sharing</h2>
+                <p class="text-gray-600">Get instant download links and embed codes to share your videos anywhere online.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e608e657-7279-4911-9d95-828a7dcc30eb.png" alt="Icon showing embedding options with website layout and play button in minimalistic design palette" class="mx-auto mb-4 w-16 h-16">
+                <h2 class="text-2xl font-semibold mb-2">Seamless Embedding</h2>
+                <p class="text-gray-600">Embed videos on your website with our customizable, ad-free player.</p>
+            </div>
+        </section>
+
+        <!-- Video Player & Upload Zone -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8">Watch & Manage Videos</h2>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-8">
+                <div class="upload-zone mx-auto" id="uploadZone">
+                    <p class="text-gray-500 mb-4">Drag & drop or click to select a video for upload</p>
+                    <span class="text-4xl">📁</span> <!-- Placeholder for upload icon -->
+                    <p class="text-sm text-gray-400 mt-2">No account required. Works on all devices.</p>
+                </div>
+                <div class="video-placeholder" id="videoPlaceholder">
+                    <video id="videoPlayer" controls class="video-player" poster="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/da92793f-c738-46b8-a827-a72a8e092d0d.png">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="mt-4 text-center">
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded mr-2 hover:bg-blue-600" id="shareBtn">Share Link</button>
+                        <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" id="embedBtn">Get Embed Code</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recommendations -->
+        <section class="text-center">
+            <h2 class="text-3xl font-bold mb-8">Why Choose VideoStream?</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4">Blazing Fast</h3>
+                    <p class="text-gray-600">Optimized for quick uploads and smooth playback on desktops, mobiles, and tablets.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4">No Ads, No Hassle</h3>
+                    <p class="text-gray-600">Enjoy ad-free viewing and simplicity designed for creators and businesses alike.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2023 VideoStream. All rights reserved. Simulate uploads for demonstration purposes.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Upload functionality (simulated)
+        const uploadBtn = document.getElementById('uploadBtn');
+        const videoFile = document.getElementById('videoFile');
+        const uploadZone = document.getElementById('uploadZone');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const shareBtn = document.getElementById('shareBtn');
+        const embedBtn = document.getElementById('embedBtn');
+
+        uploadBtn.addEventListener('click', () => {
+            videoFile.click();
+        });
+
+        uploadZone.addEventListener('click', () => {
+            videoFile.click();
+        });
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('border-blue-500');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('border-blue-500');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('border-blue-500');
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('video/')) {
+                handleVideoUpload(files[0]);
+            }
+        });
+
+        videoFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('video/')) {
+                handleVideoUpload(file);
+            }
+        });
+
+        function handleVideoUpload(file) {
+            const url = URL.createObjectURL(file);
+            videoPlayer.src = url;
+            uploadZone.style.display = 'none';
+            videoPlayer.style.display = 'block';
+            alert('Video uploaded! In a real app, this would process on a server.');
+        }
+
+        // Share and Embed (mock)
+        shareBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(window.location.href);
+            alert('Link copied to clipboard!');
+        });
+
+        embedBtn.addEventListener('click', () => {
+            const embedCode = `<iframe src="${window.location.href}" width="800" height="450"></iframe>`;
+            navigator.clipboard.writeText(embedCode);
+            alert('Embed code copied to clipboard!');
+        });
+    </script>
+</body>
+</html>
