@@ -105,67 +105,88 @@
         </div>
     </footer>
 
-    <script>
-        // Upload functionality (simulated)
-        const uploadBtn = document.getElementById('uploadBtn');
-        const videoFile = document.getElementById('videoFile');
-        const uploadZone = document.getElementById('uploadZone');
-        const videoPlayer = document.getElementById('videoPlayer');
-        const shareBtn = document.getElementById('shareBtn');
-        const embedBtn = document.getElementById('embedBtn');
+   <script>
+/* ------ CONFIG: put your Replit URL here ------ */
+const BACKEND = "https://b93e9082-a47d-473a-bb2c-a7bafc53670e-00-26tncy61y9wi6.worf.replit.dev";
 
-        uploadBtn.addEventListener('click', () => {
-            videoFile.click();
-        });
+/* DOM elements (existing in your page) */
+const uploadBtn = document.getElementById('uploadBtn');
+const videoFile = document.getElementById('videoFile');
+const uploadZone = document.getElementById('uploadZone');
+const videoPlayer = document.getElementById('videoPlayer');
+const shareBtn = document.getElementById('shareBtn');
+const embedBtn = document.getElementById('embedBtn');
 
-        uploadZone.addEventListener('click', () => {
-            videoFile.click();
-        });
+/* Basic UI bindings */
+uploadBtn.addEventListener('click', () => videoFile.click());
+uploadZone.addEventListener('click', () => videoFile.click());
 
-        uploadZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadZone.classList.add('border-blue-500');
-        });
+uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('border-blue-500'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('border-blue-500'));
+uploadZone.addEventListener('drop', async (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('border-blue-500');
+  const files = e.dataTransfer.files;
+  if (files.length > 0 && files[0].type.startsWith('video/')) {
+    await handleVideoUpload(files[0]);
+  }
+});
 
-        uploadZone.addEventListener('dragleave', () => {
-            uploadZone.classList.remove('border-blue-500');
-        });
+videoFile.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (file && file.type.startsWith('video/')) {
+    await handleVideoUpload(file);
+  }
+});
 
-        uploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('border-blue-500');
-            const files = e.dataTransfer.files;
-            if (files.length > 0 && files[0].type.startsWith('video/')) {
-                handleVideoUpload(files[0]);
-            }
-        });
+/* Upload function that talks to your Replit backend */
+async function handleVideoUpload(file) {
+  const formData = new FormData();
+  formData.append('video', file);
 
-        videoFile.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file && file.type.startsWith('video/')) {
-                handleVideoUpload(file);
-            }
-        });
+  // small UI update: show uploading text (keeps layout)
+  const statusP = uploadZone.querySelector('p');
+  const prevText = statusP ? statusP.textContent : '';
+  if (statusP) statusP.textContent = 'Uploading... please wait';
 
-        function handleVideoUpload(file) {
-            const url = URL.createObjectURL(file);
-            videoPlayer.src = url;
-            uploadZone.style.display = 'none';
-            videoPlayer.style.display = 'block';
-            alert('Video uploaded! In a real app, this would process on a server.');
-        }
+  try {
+    const res = await fetch(BACKEND + '/upload', {
+      method: 'POST',
+      body: formData,
+    });
 
-        // Share and Embed (mock)
-        shareBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(window.location.href);
-            alert('Link copied to clipboard!');
-        });
+    if (!res.ok) throw new Error('Upload request failed');
 
-        embedBtn.addEventListener('click', () => {
-            const embedCode = `<iframe src="${window.location.href}" width="800" height="450"></iframe>`;
-            navigator.clipboard.writeText(embedCode);
-            alert('Embed code copied to clipboard!');
-        });
-    </script>
+    const data = await res.json(); // backend returns { url: "/videos/filename.ext" }
+
+    if (!data || !data.url) throw new Error('No URL returned from backend');
+
+    const videoUrl = BACKEND + data.url;
+
+    // show video from backend
+    videoPlayer.src = videoUrl;
+    uploadZone.style.display = 'none';
+    videoPlayer.style.display = 'block';
+
+    // update Share and Embed buttons to copy the real link
+    shareBtn.onclick = () => {
+      navigator.clipboard.writeText(videoUrl).then(() => {
+        alert('Shareable link copied to clipboard!');
+      });
+    };
+    embedBtn.onclick = () => {
+      const embedCode = `<iframe src="${videoUrl}" width="800" height="450"></iframe>`;
+      navigator.clipboard.writeText(embedCode).then(() => {
+        alert('Embed code copied to clipboard!');
+      });
+    };
+
+  } catch (err) {
+    console.error(err);
+    alert('Upload failed: ' + (err.message || err));
+    if (statusP) statusP.textContent = prevText || 'Drag & drop or click to select a video for upload';
+  }
+}
+</script>
 </body>
 </html>
